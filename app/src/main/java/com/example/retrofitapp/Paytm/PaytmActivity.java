@@ -11,14 +11,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.retrofitapp.R;
 import com.example.retrofitapp.Webservice.WebService;
+
+import com.paytm.pg.merchant.PaytmChecksum;
 import com.paytm.pgsdk.PaytmOrder;
 
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.paytm.pgsdk.TransactionManager;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 
@@ -104,18 +111,32 @@ Button btnPay;
                         Constant.Industry_Type_ID
                 );
             String checksum=
-            service.getChecksum(Constant.M_ID,paytm.getOrderId(), "1EnkbYPm9iKOJEGW");
-            Log.d("PaytmActivity","Checksum"+checksum);
-                initializePaytmPayment(checksum,paytm);
+            service.getChecksum(paytm.getOrderId(),paytm.getCustId(), "12");
+            Log.d("PaytmActivity","Checksum:"+checksum);
+                initializePaytmPayment(parseChecksum(checksum),paytm);
             }
         }).start();
 
+
+    }
+
+    public String parseChecksum(String cheksum){
+        String txntoken="";
+        try {
+            JSONObject jsonObject=new JSONObject(cheksum);
+            txntoken=jsonObject.getJSONObject("body").getString("txnToken");
+           // txntoken=jsonObject.getJSONObject("head").getString("signature");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return txntoken;
     }
 
     private void initializePaytmPayment(String checksumHash, Paytm paytm) {
-        String result = checksumHash.replaceAll("^\"+|\"+$", "");
-        //getting paytm service
-        PaytmPGService Service = PaytmPGService.getStagingService("https://securegw-stage.paytm.in/theia/processTransaction");
+
+
+       /* //getting paytm service
+        PaytmPGService Service = PaytmPGService.getStagingService("");
 
         //use this when using for production
         //PaytmPGService Service = PaytmPGService.getProductionService();
@@ -129,7 +150,7 @@ Button btnPay;
         paramMap.put("TXN_AMOUNT", paytm.getTxnAmount());
         paramMap.put("WEBSITE", paytm.getWebsite());
         paramMap.put("CALLBACK_URL", paytm.getCallBackUrl());
-        paramMap.put("CHECKSUMHASH", result);
+        paramMap.put("CHECKSUMHASH", checksumHash);
         paramMap.put("INDUSTRY_TYPE_ID", paytm.getIndustryTypeId());
 
         //creating a paytm order object using the hashmap
@@ -141,13 +162,15 @@ Button btnPay;
         //finally starting the payment transaction
         Service.startPaymentTransaction(this,
                 true, true,
-                PaytmActivity.this);
+                PaytmActivity.this);*/
 
 
-       /* PaytmOrder paytmOrder = new PaytmOrder( paytm.getOrderId()
-                ,Constant.M_ID, result, "10", Constant.Callback_URL);
+        PaytmOrder paytmOrder = new PaytmOrder( paytm.getOrderId()
+                ,Constant.M_ID, checksumHash, "12", Constant.Callback_URL+"?ORDER_ID="+paytm.getOrderId());
         TransactionManager transactionManager = new TransactionManager(paytmOrder, this);
-        transactionManager.startTransaction(this, 101);*/
+        transactionManager.setShowPaymentUrl("https://securegw.paytm.in/theia/api/v1/showPaymentPage");
+        transactionManager.startTransaction(this, 101);
+
     }
 
 
@@ -196,11 +219,31 @@ Button btnPay;
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101 && data != null) {
             Toast.makeText(this, data.getStringExtra("nativeSdkForMerchantMessage") + data.getStringExtra("response"), Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onActivityResult: "+data.getStringExtra("nativeSdkForMerchantMessage") + data.getStringExtra("response"));
         }
     }
 
     private String generateString() {
         String uuid = UUID.randomUUID().toString();
         return uuid.replaceAll("-", "");
+    }
+
+    public String javaSignature(String orderId){
+        boolean verifySignature = false;
+        /* initialize an hash */
+        TreeMap<String, String> params = new TreeMap<String, String>();
+        params.put("MID", Constant.M_ID);
+        params.put("ORDERID",orderId);
+        String paytmChecksum = null;
+        try {
+            paytmChecksum = PaytmChecksum.generateSignature(params, "1EnkbYPm9iKOJEGW");
+            verifySignature= PaytmChecksum.verifySignature(params, "1EnkbYPm9iKOJEGW", paytmChecksum);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       if(verifySignature){
+           return paytmChecksum;
+       }
+       return "";
     }
 }

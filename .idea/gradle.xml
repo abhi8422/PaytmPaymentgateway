@@ -12,6 +12,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/PaytmChecksum" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/ksoap2-android-assembly-3.4.0-jar-with-dependencies" />
           </set>

@@ -35,7 +35,7 @@ public class Paytm {
     public Paytm(String mId, String channelId, String txnAmount, String website, String callBackUrl, String industryTypeId) {
         this.mId = mId;
         this.orderId =generateString();
-        this.custId = "CUST_001";
+        this.custId = generateString();
         this.channelId = channelId;
         this.txnAmount = txnAmount;
         this.website = website;

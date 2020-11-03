@@ -13,12 +13,12 @@ public class WebService {
     public WebService() {
     }
 
-    public String getChecksum(String mID,String orderID,String merchantKey){
+    public String getChecksum(String OrdId,String CustId,String Amount){
         String resultString="";
         SoapObject soapObject=new SoapObject("http://tempuri.org/","GetPaytmSignature");
-        soapObject.addProperty("mid",mID);
-        soapObject.addProperty("orderId",orderID);
-        soapObject.addProperty("merchanet_key",merchantKey);
+        soapObject.addProperty("OrdId",OrdId);
+        soapObject.addProperty("CustId",CustId);
+        soapObject.addProperty("Amount",Amount);
         SoapSerializationEnvelope envelope=new SoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.dotNet=true;
         envelope.setOutputSoapObject(soapObject);

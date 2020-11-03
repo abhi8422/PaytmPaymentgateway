@@ -1,3 +1,4 @@
+include ':PaytmChecksum'
 include ':ksoap2-android-assembly-3.4.0-jar-with-dependencies'
 include ':app'
 rootProject.name = "RetrofitApp"
