@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.retrofitapp.GooglePay.GooglePayActivity;
+import com.example.retrofitapp.Paytm.PaytmActivity;
+import com.example.retrofitapp.PhonePay.PhonePayActivity;
 import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.paytm.pgsdk.TransactionManager;
@@ -20,24 +23,46 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ProgressBar progressBar;
+    /*ProgressBar progressBar;
     String midString;
     String txnAmountString;
     String orderIdString;
     String txnTokenString;
     Button btnPayNow;
-
-    Integer ActivityRequestCode = 2;
+    Integer ActivityRequestCode = 2;*/
+    Button btn_paytm,btn_googlepay,btn_phonepay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btn_paytm=findViewById(R.id.btn_paytm);
+        btn_paytm.setOnClickListener(this);
+        btn_googlepay=findViewById(R.id.btn_googlepay);
+        btn_googlepay.setOnClickListener(this);
+        btn_phonepay=findViewById(R.id.btn_phonepay);
+        btn_phonepay.setOnClickListener(this);
+       /* progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnPayNow = (Button) findViewById(R.id.txnProcessBtn);
-        btnPayNow.setOnClickListener(MainActivity.this);
+        btnPayNow.setOnClickListener(MainActivity.this);*/
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_paytm:
+                startActivity(new Intent(this, PaytmActivity.class));
+                break;
+            case R.id.btn_googlepay:
+                startActivity(new Intent(this, GooglePayActivity.class));
+                break;
+            case R.id.btn_phonepay:
+                startActivity(new Intent(this, PhonePayActivity.class));
+                break;
+        }
+    }
+
+/*
     public void btnProcessEvent (){
         progressBar.setVisibility(View.VISIBLE);
 
@@ -148,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+*/
 
 
 }

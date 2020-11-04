@@ -114,6 +114,7 @@ Button btnPay;
             service.getChecksum(paytm.getOrderId(),paytm.getCustId(), "12");
             Log.d("PaytmActivity","Checksum:"+checksum);
                 initializePaytmPayment(parseChecksum(checksum),paytm);
+               // initializePaytmPayment(checksum,paytm);
             }
         }).start();
 
@@ -124,8 +125,8 @@ Button btnPay;
         String txntoken="";
         try {
             JSONObject jsonObject=new JSONObject(cheksum);
-            txntoken=jsonObject.getJSONObject("body").getString("txnToken");
-           // txntoken=jsonObject.getJSONObject("head").getString("signature");
+            //txntoken=jsonObject.getJSONObject("body").getString("txnToken");
+           txntoken=jsonObject.getJSONObject("head").getString("signature");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -133,9 +134,7 @@ Button btnPay;
     }
 
     private void initializePaytmPayment(String checksumHash, Paytm paytm) {
-
-
-       /* //getting paytm service
+        //getting paytm service
         PaytmPGService Service = PaytmPGService.getStagingService("");
 
         //use this when using for production
@@ -162,14 +161,12 @@ Button btnPay;
         //finally starting the payment transaction
         Service.startPaymentTransaction(this,
                 true, true,
-                PaytmActivity.this);*/
-
-
-        PaytmOrder paytmOrder = new PaytmOrder( paytm.getOrderId()
-                ,Constant.M_ID, checksumHash, "12", Constant.Callback_URL+"?ORDER_ID="+paytm.getOrderId());
+                PaytmActivity.this);
+        /*PaytmOrder paytmOrder = new PaytmOrder( paytm.getOrderId()
+                ,Constant.M_ID, checksumHash, "12", Constant.Callback_URL+"?ORDER_ID="+paytm.getOrderId()+"");
         TransactionManager transactionManager = new TransactionManager(paytmOrder, this);
         transactionManager.setShowPaymentUrl("https://securegw.paytm.in/theia/api/v1/showPaymentPage");
-        transactionManager.startTransaction(this, 101);
+        transactionManager.startTransaction(this, 101);*/
 
     }
 

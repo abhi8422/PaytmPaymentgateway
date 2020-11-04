@@ -2,38 +2,76 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.retrofitapp">
-<uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_PRIVILEGED"
         tools:ignore="ProtectedPermissions" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RetrofitApp"
-        android:networkSecurityConfig="@xml/network_config"
-        >
+        android:theme="@style/Theme.RetrofitApp">
+        <activity android:name=".PhonePay.PhonePayActivity"></activity>
+        <activity android:name=".GooglePay.GooglePayActivity" />
         <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".Paytm.PaytmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Paytm.PaytmActivity" />
+        <activity
+            android:name="com.paytm.pgsdk.PaytmPGActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:screenOrientation="portrait" />
 
-        <activity android:name="com.paytm.pgsdk.PaytmPGActivity"
-            android:screenOrientation="portrait" android:configChanges="keyboardHidden|orientation|keyboard"/>
+        <activity
+            android:name=".GooglePay.activity.CheckoutActivity"
+            android:label="GooglePay"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
 
+        <activity
+            android:name=".GooglePay.activity.PaymentTransparentActivity"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/Transparent" />
 
+        <!-- Enabling this flag is required in order to use the PaymentsClient -->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+
+        <service
+            android:name=".GooglePay.service.PaymentNotificationIntentService"
+            android:enabled="true"
+            android:icon="@drawable/googlepay_button_overlay"
+            android:label="@string/app_name" />
+
+        <!--phone pay-->
+        <!-- Keep it false in production environment-->
+        <meta-data
+            android:name="com.phonepe.android.sdk.Debuggable"
+            android:value="true"/>
+        <!--phone pay-->
+        <!-- Keep it false in production environment-->
+        <meta-data
+            android:name="com.phonepe.android.sdk.isUAT"
+            android:value="true"/>
     </application>
 
 </manifest>
-
-

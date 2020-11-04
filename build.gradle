@@ -17,6 +17,9 @@ allprojects {
         google()
         jcenter()
         maven {url "https://artifactory.paytm.in/libs-release-local"}
+        maven {
+            url  "https://phonepe.bintray.com/PhonePeIntentSDK"
+        }
     }
 }
 
